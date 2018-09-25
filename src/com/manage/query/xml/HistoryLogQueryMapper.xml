@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.HistoryLogQueryMapper" >
+	
+	<select id="selectByHistoryLogQuery" parameterType="com.manage.query.model.HistoryLogQuery" resultType="com.manage.query.model.HistoryLogQuery">
+		select hl.*,u.name as username from historylog hl
+		left join users u on u.id=hl.userid where 1=1
+		<if test="starttime != null and starttime != ''">
+			and DATE_FORMAT(hl.operatetime,'%Y-%m-%d') &gt;= #{starttime}
+		</if>
+		<if test="endtime != null and endtime != ''">
+			and DATE_FORMAT(hl.operatetime,'%Y-%m-%d') &lt;= #{endtime}
+		</if>
+		<if test="username != null and username != ''">
+			and u.name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+		order by hl.operatetime desc
+		<if test="pager != null" >
+	      limit #{pager.begin} , #{pager.end}
+	    </if>
+	</select>
+	
+	<select id="countByHistoryLogQuery" parameterType="com.manage.query.model.HistoryLogQuery" resultType="java.lang.Integer">
+		select count(hl.id) as username from historylog hl
+		left join users u on u.id=hl.userid where 1=1
+		<if test="starttime != null and starttime != ''">
+			and DATE_FORMAT(hl.operatetime,'%Y-%m-%d') &gt;= #{starttime}
+		</if>
+		<if test="endtime != null and endtime != ''">
+			and DATE_FORMAT(hl.operatetime,'%Y-%m-%d') &lt;= #{endtime}
+		</if>
+		<if test="username != null and username != ''">
+			and u.name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+	</select>
+	
+</mapper>

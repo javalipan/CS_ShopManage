@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.GoodsQueryMapper" >
+	
+	<select id="selectGoodsQueryById" resultType="com.manage.query.model.GoodsQuery">
+		select g.*,b.name brandname,t.name typename,s.name styletypename from t_goods g
+		left join t_brand b on b.id=g.brandId
+		left join t_type t on t.code =g.typeid
+		left join t_style s on s.id=g.styletypeid
+		where g.id=#{id}
+	</select>
+	
+	<select id="selectGoodsQueryByCode" resultType="com.manage.query.model.GoodsQuery">
+		select g.*,b.name brandname,t.name typename,s.name styletypename from t_goods g
+		left join t_brand b on b.id=g.brandId
+		left join t_type t on t.code =g.typeid
+		left join t_style s on s.id=g.styletypeid
+		where g.code=#{code}
+	</select>
+	
+	<select id="selectByGoodsQuery" parameterType="com.manage.query.model.GoodsQuery" resultType="com.manage.query.model.GoodsQuery">
+		select g.*,b.name brandname,t.name typename,(select sum(d.amount) from t_goods_detail d where  d.goodsid=g.id) amount from t_goods g
+		left join t_brand b on b.id=g.brandId
+		left join t_type t on t.code =g.typeid
+		<where>
+			<if test="code != null and code != ''">
+				and g.code=#{code}
+			</if>
+			<if test="codelike != null and codelike != ''">
+				and g.code like '%${codelike}%'
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+			<if test="typeid != null and typeid != ''">
+				and g.typeid=#{typeid}
+			</if>
+			<if test="name != null and name != ''">
+				and g.name like '%${name}%'
+			</if>
+			<if test="brandname != null and brandname != ''">
+				and b.name like '%${brandname}%'
+			</if>
+			<if test="status != null and status != ''">
+				and g.status=#{status}
+			</if>
+			<if test="brandType != null and brandType != ''">
+				and b.type=#{brandType}
+			</if>
+			<if test="isrecomment != null and isrecomment != ''">
+				and g.isrecomment=#{isrecomment}
+			</if>
+			<if test="isnew != null and isnew != ''">
+				and g.isnew=#{isnew}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByGoodsQuery" parameterType="com.manage.query.model.GoodsQuery" resultType="java.lang.Integer">
+		select count(1) from t_goods g
+		left join t_brand b on b.id=g.brandId
+		<where>
+			<if test="code != null and code != ''">
+				and g.code=#{code}
+			</if>
+			<if test="codelike != null and codelike != ''">
+				and g.code like '%${codelike}%'
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+			<if test="typeid != null and typeid != ''">
+				and g.typeid=#{typeid}
+			</if>
+			<if test="name != null and name != ''">
+				and g.name like '%${name}%'
+			</if>
+			<if test="brandname != null and brandname != ''">
+				and b.name like '%${brandname}%'
+			</if>
+			<if test="status != null and status != ''">
+				and g.status=#{status}
+			</if>
+			<if test="brandType != null and brandType != ''">
+				and b.type=#{brandType}
+			</if>
+			<if test="isrecomment != null and isrecomment != ''">
+				and g.isrecomment=#{isrecomment}
+			</if>
+			<if test="isnew != null and isnew != ''">
+				and g.isnew=#{isnew}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectSumByGoodsQuery" parameterType="com.manage.query.model.GoodsQuery" resultType="com.manage.query.model.GoodsQuery">
+		select *,sum(gdamount) amount,sum(ramount) totalamount,sum(od2amount)saleamount, sum(ototalprice) saleprice from (select g.*,gd.amount gdamount,r.amount ramount,od2.amount od2amount,o.totalprice ototalprice from t_goods g
+		left join t_goods_detail gd on gd.goodsid=g.id
+		left join t_order_detail od on od.goodsDetailId=gd.id
+		left join t_order o on o.id=od.orderid and o.status=0 and o.ispay=1
+		left join t_order_detail od2 on od2.orderid=o.id
+		left join t_repertory r on gd.goodsid=r.goodsDetailId group by g.id)t
+		<where>
+			<if test="code != null and code != ''">
+				and code=#{code}
+			</if>
+			<if test="codelike != null and codelike != ''">
+				and g.code like '%${codelike}%'
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and brandid=#{brandid}
+			</if>
+			<if test="typeid != null and typeid != ''">
+				and typeid=#{typeid}
+			</if>
+			<if test="name != null and name != ''">
+				and name like '%${name}%'
+			</if>
+			<if test="status != null and status != ''">
+				and status=#{status}
+			</if>
+			<if test="isrecomment != null and isrecomment != ''">
+				and isrecomment=#{isrecomment}
+			</if>
+		</where>
+		group by id
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+		
+	</select>
+	
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.RoleQueryMapper" >
+	
+	<select id="selectRoleQuery" parameterType="com.manage.query.model.RoleQuery" resultType="com.manage.query.model.RoleQuery">
+		select r.* from roles r where 1=1
+		<if test="name != null and name != ''">
+			and r.name like CONCAT(CONCAT('%', #{name}), '%')
+		</if>
+		<if test="pager != null" >
+	      limit #{pager.begin} , #{pager.end}
+	    </if>
+	</select>
+	
+	<select id="countByRoleQuery" parameterType="com.manage.query.model.RoleQuery" resultType="java.lang.Integer">
+		select count(r.id) as typeName from roles r where 1=1
+		<if test="name != null and name != ''">
+			and r.name like CONCAT(CONCAT('%', #{name}), '%')
+		</if>
+	</select>
+	
+	<select id="selectAddedUsers" parameterType="com.manage.query.model.RoleQuery" resultType="com.manage.dao.model.User">
+		select u.* from userroles ur
+		left join users u on u.id=ur.userid
+		where 1=1
+		<if test="id != null and id != ''">
+			and ur.roleid= #{id}
+		</if>
+		<if test="username != null and username != ''">
+			and u.name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+		<if test="pager != null" >
+	      limit #{pager.begin} , #{pager.end}
+	    </if>
+	</select>
+	
+	<select id="countAddedUsers" parameterType="com.manage.query.model.RoleQuery" resultType="java.lang.Integer">
+		select count(ur.id) from userroles ur
+		left join users u on u.id=ur.userid
+		where 1=1
+		<if test="id != null and id != ''">
+			and ur.roleid= #{id}
+		</if>
+		<if test="username != null and username != ''">
+			and u.name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+	</select>
+	
+	<select id="selectUnaddedUsers" parameterType="com.manage.query.model.RoleQuery" resultType="com.manage.dao.model.User">
+		select * from users where id not in (
+			select ur.userid from userroles ur where 1=1
+			<if test="id != null and id != ''">
+				and ur.roleid= #{id}
+			</if>
+		)
+		<if test="username != null and username != ''">
+			and name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+		<if test="pager != null" >
+	      limit #{pager.begin} , #{pager.end}
+	    </if>
+	</select>
+	
+	<select id="countUnaddedUsers" parameterType="com.manage.query.model.RoleQuery" resultType="java.lang.Integer">
+		select count(id) from users where id not in (
+			select ur.userid from userroles ur where 1=1
+			<if test="id != null and id != ''">
+				and ur.roleid= #{id}
+			</if>
+		)
+		<if test="username != null and username != ''">
+			and name like CONCAT(CONCAT('%', #{username}), '%')
+		</if>
+	</select>
+	
+</mapper>

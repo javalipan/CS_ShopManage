@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.RepertoryQueryMapper" >
+	
+	
+	<select id="selectByRepertoryQuery" parameterType="com.manage.query.model.RepertoryQuery" resultType="com.manage.query.model.RepertoryQuery">
+		select r.*,g.code,d.detailcode,b.name brandName,g.name goodsName,s1.specvalue colorName,s2.specvalue sizeName from t_repertory r
+		left join t_goods_detail d on r.goodsdetailid=d.id
+		left join t_goods g on g.id=d.goodsid
+		left join t_brand b on b.id=g.brandId
+		left join t_spec s1 on s1.id=d.colorid
+		left join t_spec s2 on s2.id=d.sizeid 
+		<where>
+			<if test="code != null and code != ''">
+				and g.code= #{code}
+			</if>
+			<if test="detailcode != null and detailcode != ''">
+				and g.detailcode= #{detailcode}
+			</if>
+			<if test="brandName != null and brandName != ''">
+				and b.name like '%${brandName}%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				and g.name like '%${goodsName}%'
+			</if>
+			<if test="goodsid != null and goodsid != ''">
+				and g.id=#{goodsid}
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and b.id=#{brandid}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByRepertoryQuery" parameterType="com.manage.query.model.RepertoryQuery" resultType="java.lang.Integer">
+		select count(1) from t_repertory r
+		left join t_goods_detail d on r.goodsdetailid=d.id
+		left join t_goods g on g.id=d.goodsid
+		left join t_brand b on b.id=g.brandId
+		<where>
+			<if test="code != null and code != ''">
+				and g.code= #{code}
+			</if>
+			<if test="detailcode != null and detailcode != ''">
+				and g.detailcode= #{detailcode}
+			</if>
+			<if test="brandName != null and brandName != ''">
+				and b.name like '%${brandName}%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				and g.name like '%${goodsName}%'
+			</if>
+			<if test="goodsid != null and goodsid != ''">
+				and g.id=#{goodsid}
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and b.id=#{brandid}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

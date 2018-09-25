@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.LoginHistoryQueryMapper" >
+	<select id="sumLoginHistory" resultType="java.util.Map">
+		select DATE_FORMAT(lh.loginTime,'%Y-%m-%d %H')logtime,count(1)cnt from t_login_history lh 
+		<where>
+			<if test="startTime !=null and startTime !='' ">
+				and date_format(lh.loginTime,'%Y-%m-%d')>=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime !='' ">
+				and date_format(lh.loginTime,'%Y-%m-%d') &lt;= #{endTime}
+			</if>
+		</where>
+		 group by logtime 
+	</select>
+
+</mapper>

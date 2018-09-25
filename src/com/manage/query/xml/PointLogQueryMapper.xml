@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.PointLogQueryMapper" >
+	
+	<select id="selectByPointLogQuery" parameterType="com.manage.query.model.PointLogQuery" resultType="com.manage.query.model.PointLogQuery">
+		select pl.*,m.nickname,o.code from t_point_log pl
+		left join t_order o on o.id=pl.orderid
+		left join t_member m on m.id=pl.memberid
+		<where>
+			<if test="nickname != null and nickname != ''">
+				and m.nickname like '%${nickname}%'
+			</if>
+			<if test="memberid != null and memberid != ''">
+				and pl.memberid=#{memberid}
+			</if>
+			<if test="type != null and type != ''">
+				and pl.type=#{type}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByPointLogQuery" parameterType="com.manage.query.model.PointLogQuery" resultType="java.lang.Integer">
+		select count(1) from t_point_log pl
+		left join t_member m on m.id=pl.memberid
+		<where>
+			<if test="nickname != null and nickname != ''">
+				and m.nickname like '%${nickname}%'
+			</if>
+			<if test="memberid != null and memberid != ''">
+				and pl.memberid=#{memberid}
+			</if>
+			<if test="type != null and type != ''">
+				and pl.type=#{type}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

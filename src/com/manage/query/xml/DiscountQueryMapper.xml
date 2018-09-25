@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.DiscountQueryMapper" >
+	<select id="getGoodsDetailIds" parameterType="com.manage.query.model.DiscountQuery" resultType="java.lang.Long">
+		select gd.id from t_goods g 
+		left join t_goods_detail gd on g.id=gd.goodsid
+		<where>
+			<if test="brandid != null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+			<if test="season != null and season != ''">
+				and g.goods_season=#{season}
+			</if>
+			<if test="year != null and year != ''">
+				and g.goodsyear=#{year}
+			</if>
+		</where>
+	</select>
+	
+	<select id="goodsSum" resultType="java.util.Map">
+		select b.id,b.name,g.goods_season,g.goodsyear,
+		(select sum(od.amount) from t_order o left join t_order_detail od on od.orderid =o.id where o.isPay=1 and o.status=0 and od.goodsdetailid in <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>)selledamount,
+		(select sum(od.amount*od.price) from t_order o left join t_order_detail od on od.orderid =o.id where o.isPay=1 and o.status=0 and od.goodsdetailid in <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>) selledmoney,
+		(select sum(od.amount*od.costprice) from t_order o left join t_order_detail od on od.orderid =o.id where o.isPay=1 and o.status=0 and od.goodsdetailid in <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>) selledcost,
+		(select (sum(od.amount*od.price)-sum(od.costprice*od.amount))/sum(od.costprice*od.amount) from t_order o left join t_order_detail od on od.orderid =o.id where o.isPay=1 and o.status=0 and od.goodsdetailid in <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>) rate,
+		sum(gd.amount)remainresp,
+		sum(gd.costPrice*gd.amount)remaincost,
+		sum(gd.amount*gd.price) remainsell
+		from t_goods g
+		left join t_brand b on b.id=g.brandid
+		left join t_goods_detail gd on g.id=gd.goodsid
+		where gd.id in <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>
+		group by g.brandid,g.goods_season,g.goodsyear
+	</select>
+
+</mapper>

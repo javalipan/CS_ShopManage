@@ -1,0 +1,47 @@
+@charset "utf-8";
+*{font-size:12px;}
+#queryForm *{font-size: 12px;font-family: Microsoft YaHei;}
+.title{height:30px;margin-bottom: 10px;}
+.title .icon{float: left;margin-top: 5px;}
+.title span{line-height: 30px;font-weight: bold;font-size: 14px;}
+.l-form table tr td{padding: 5px;}
+.formitems .item{width:300px;float: left;margin-bottom: 8px;}
+.formitems .full{width:100%;}
+.formitems .item2{width:600px;}
+.formitems .item .label{text-align: right;float: left;width:75px;}
+.formitems .item .input{float: left;width:225px;min-height: 25px;}
+.btnDiv{text-align: center;}
+
+.clearfix{clear: both;}
+ol, ul {list-style: none;}
+.product-type-right{height: 227px;border: 1px solid #e2e2e2;width: 90%;margin-left: 50px;}
+.product-type-left-title{    border-bottom: 1px solid #e2e2e2;background-color: #f7f7f7;color: #757575;text-indent: 10px;height: 28px;line-height: 28px;}
+.guigeName input[type="checkbox"]{margin-right:3px;}
+.dd-box {height: 195px;overflow: auto;}
+.guigeName {margin: 10px 10px  3px 10px;cursor: pointer;}
+.guigeName span {color: #3498db;margin-left: 30px;}
+.guigeName-product ul li {border: 1px solid #d6dee3;height: 24px;line-height: 24px;margin: 5px 0 5px 13px;min-width: 30px;padding: 0 5px;text-align: center;float:left;cursor: pointer;}
+.tableDiv{padding-top:10px;padding-bottom: 10px;}
+.table-product {border-collapse: collapse;margin-left: 50px;margin-top:10px;width:90%;}
+.table-product tr {text-align: center;}
+.table-product tr th {height: 28px;background-color: #f7f7f7;border: 1px solid #dcdcdc;color: #646464;font-weight: normal;}
+.table-product tr td {    height: 30px;    line-height: 30px;    border: 1px solid #dcdcdc;}
+.table-product tr .deleteRow{cursor:pointer;}
+.guigeName-product ul li.on { background: #ff6600; color: #fff;}
+
+.red{color:red;}
+.green{color:#49d073;}
+
+.trbutton{color:#ff6600;cursor: pointer;text-decoration: none;    vertical-align: top;}
+.trbutton:hover{color:#ff6600;text-decoration: none;}
+
+.left{float:left;}
+.right{float:right;}
+.clear{clear:both;}
+.goodsitem{width:120px;margin-right:15px;text-align: center;}
+.goodsitem .img,.goodsitem .goodsname{text-align: center;}
+.goodsitem .del{cursor:pointer;display:none;position:relative;background: #ccc;padding:5px 0;color:#fff;text-align: center;top:-25px;}
+
+.totalinfo{padding:5px;font-size: 12px;font-family: Microsoft YaHei;}
+.totalinfo label{margin-left:5px;}
+.totalinfo .num{color:red;font-size: 14px;font-weight: bold;}

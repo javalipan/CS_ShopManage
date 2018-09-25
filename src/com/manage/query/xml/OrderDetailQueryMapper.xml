@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.OrderDetailQueryMapper" >
+	
+	<select id="selectOrderDetailQueryById" resultType="com.manage.query.model.OrderDetailQuery">
+		select o.code,od.*,b.name brandName,g.name goodsName,s1.specvalue sizeName ,s2.specvalue colorName from t_order_detail od
+		left join t_order o on o.id=od.orderid
+		left join t_goods_detail gd on od.goodsdetailid=gd.id
+		left join t_goods g on g.id=gd.goodsid
+		left join t_brand b on b.id=g.brandid
+		left join t_spec s1 on od.sizeid=s1.id
+		left join t_spec s2 on od.colorId=s2.id
+		where od.id=#{id}
+	</select>
+	
+	<select id="selectByOrderDetailQuery" parameterType="com.manage.query.model.OrderDetailQuery" resultType="com.manage.query.model.OrderDetailQuery">
+		select o.code,od.*,b.name brandName,g.name goodsName,s1.specvalue sizeName ,s2.specvalue colorName from t_order_detail od
+		left join t_order o on o.id=od.orderid
+		left join t_goods_detail gd on od.goodsdetailid=gd.id
+		left join t_goods g on g.id=gd.goodsid
+		left join t_brand b on b.id=g.brandid
+		left join t_spec s1 on od.sizeid=s1.id
+		left join t_spec s2 on od.colorId=s2.id
+		<where>
+			<if test="orderid != null and orderid != ''">
+				od.orderid=#{orderid}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByOrderDetailQuery" parameterType="com.manage.query.model.OrderDetailQuery" resultType="java.lang.Integer">
+		select count(1) from t_order_detail od
+		<where>
+			<if test="orderid != null and orderid != ''">
+				od.orderid=#{orderid}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

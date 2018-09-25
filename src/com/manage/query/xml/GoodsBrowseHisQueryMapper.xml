@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.GoodsBrowseHisQueryMapper" >
+	<select id="sumBrowseHistory" parameterType="com.manage.query.model.GoodsBrowseHisQuery" resultType="com.manage.query.model.GoodsBrowseHisQuery">
+		select g.id,g.name,count(1) cnt from t_goods_browseHis bh
+		left join t_goods g on g.id=bh.goodsId
+		<where>
+			<if test="brandid !=null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+		</where>
+		 group by g.id 
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="selectByGoodsBrowseHisQuery" parameterType="com.manage.query.model.GoodsBrowseHisQuery" resultType="com.manage.query.model.GoodsBrowseHisQuery">
+		select m.nickname membernickname,m.phone,g.name,bh.* from t_goods_browseHis bh
+		left join t_goods g on g.id=bh.goodsId
+		left join t_member m on m.id=bh.memberid
+		<where>
+			<if test="membernickname !=null and membernickname != ''">
+				and m.nickname like '%${membernickname}%'
+			</if>
+			<if test="phone !=null and phone != ''">
+				and m.phone like '%${phone}%'
+			</if>
+			<if test="name !=null and name != ''">
+				and g.name like '%${name}%'
+			</if>
+			<if test="startTime !=null and startTime != ''">
+				and date_format(bh.browseTime,'%Y-%m-%d') >=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime != ''">
+				and date_format(bh.browseTime,'%Y-%m-%d') &lt;= #{endTime}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByGoodsBrowseHisQuery" parameterType="com.manage.query.model.GoodsBrowseHisQuery" resultType="java.lang.Integer">
+		select count(1) from t_goods_browseHis bh
+		left join t_goods g on g.id=bh.goodsId
+		left join t_member m on m.id=bh.memberid
+		<where>
+			<if test="membernickname !=null and membernickname != ''">
+				and m.nickname like '%${membernickname}%'
+			</if>
+			<if test="phone !=null and phone != ''">
+				and m.phone like '%${phone}%'
+			</if>
+			<if test="name !=null and name != ''">
+				and g.name like '%${name}%'
+			</if>
+			<if test="startTime !=null and startTime != ''">
+				and date_format(bh.browseTime,'%Y-%m-%d') >=#{startTime}
+			</if>
+			<if test="endTime !=null and endTime != ''">
+				and date_format(bh.browseTime,'%Y-%m-%d') &lt;= #{endTime}
+			</if>
+		</where>
+	</select>
+
+</mapper>

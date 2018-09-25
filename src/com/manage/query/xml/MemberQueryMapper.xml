@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.query.mapper.MemberQueryMapper" >
+
+	<select id="selectByMemberQuery" resultType="com.manage.query.model.MemberQuery" parameterType="com.manage.query.model.MemberQuery">
+		select m.*,m2.nickname fromname,(select count(1) from t_member m2 where m2.fromuser=m.id)downCount from t_member m 
+		left join t_member m2 on m2.id=m.fromuser
+		<where>
+			<if test=" nickname != null and nickname != ''">
+				and m.nickname like '%${nickname}%'
+			</if>
+			<if test=" name != null and name != ''">
+				and m.name like '%${name}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and m.phone =#{phone}
+			</if>
+			<if test=" fromname != null and fromname != ''">
+				and m2.nickname like '%${fromname}%'
+			</if>
+			<if test=" month != null and month != 0">
+				and month(m.birthday) =#{month}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>	
+	
+	<select id="countByMemberQuery" resultType="java.lang.Integer" parameterType="com.manage.query.model.MemberQuery">
+		select count(distinct m.id) from t_member m 
+		left join t_member m2 on m2.id=m.fromuser
+		left join t_member_label ml on ml.memberid=m.id
+		<where>
+			<if test=" nickname != null and nickname != ''">
+				and m.nickname like '%${nickname}%'
+			</if>
+			<if test=" name != null and name != ''">
+				and m.name like '%${name}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and m.phone =#{phone}
+			</if>
+			<if test=" fromname != null and fromname != ''">
+				and m2.nickname like '%${fromname}%'
+			</if>
+			<if test="labelId != null and labelId != ''">
+				ml.id=#{labelId}
+			</if>
+			<if test="membertype != null and membertype != ''">
+				m.membertype=#{membertype}
+			</if>
+			<if test=" month != null and month != 0">
+				and month(m.birthday) =#{month}
+			</if>
+		</where>
+	</select>	
+	
+	
+	<select id="selectSumByMemberQuery" resultType="com.manage.query.model.MemberQuery" parameterType="com.manage.query.model.MemberQuery">
+		select * from (select m.*,sum(case when o.status=0 and o.ispay=1 then 1 else 0 end)buycount
+		from t_member m
+		left join t_order o on o.memberid=m.id
+		<where>
+			<if test="timeStart != null and timeStart != ''">
+				and o.ordertime &gt;= #{timeStart}
+			</if>
+			<if test="timeEnd != null and timeEnd != ''">
+				and o.ordertime &lt;= #{timeEnd}
+			</if>
+		</where>
+		group by m.id
+		)t
+		<where>
+			<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" name != null and name != ''">
+				and name like '%${name}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" hasBuy == 'true'.toString() ">
+				and t.buycount &gt; 0
+			</if>
+			<if test=" hasBuy == 'false'.toString() ">
+				and t.buycount &lt;= 0
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countSumByMemberQuery" resultType="java.lang.Integer" parameterType="com.manage.query.model.MemberQuery">
+		select count(1) from (select m.* from t_member m
+		left join t_order o on o.memberid=m.id
+		<where>
+			<if test="timeStart != null and timeStart != ''">
+				and o.ordertime &gt;= #{timeStart}
+			</if>
+			<if test="timeEnd != null and timeEnd != ''">
+				and o.ordertime &lt;= #{timeEnd}
+			</if>
+		</where>
+		group by m.id
+		)t
+		<where>
+			<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" name != null and name != ''">
+				and name like '%${name}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" hasBuy == 'true'.toString() ">
+				and buycount &gt; 0
+			</if>
+			<if test=" hasBuy == 'false'.toString() ">
+				and buycount &lt;= 0
+			</if>
+		</where>
+	</select>
+
+	<select id="memberAnalysis" parameterType="com.manage.query.model.MemberQuery" resultType="com.manage.query.model.MemberQuery">
+		select * from (
+		select m.*,count(o.id) orderCnt,avg(o.totalprice+o.balancePay)orderAvgPrice,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='level')levelLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='money')moneyLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='recent')recentLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='repeat')repeatLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='brand')brandLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='size')sizeLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='style')styleLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='time')timeLabel
+		 from t_order o
+		left join t_member m on m.id=o.memberid
+		where o.status=0 and o.ispay=1  and o.memberid is not null
+		group by m.id
+		)t0 
+		<where>
+			<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" membertype != null and membertype != ''">
+				and membertype =#{membertype}
+			</if>
+			<if test=" levelLabel != null and levelLabel != ''">
+				and levelLabel =#{levelLabel}
+			</if>
+			<if test=" moneyLabel != null and moneyLabel != ''">
+				and moneyLabel =#{moneyLabel}
+			</if>
+			<if test=" recentLabel != null and recentLabel != ''">
+				and recentLabel =#{recentLabel}
+			</if>
+			<if test=" repeatLabel != null and repeatLabel != ''">
+				and repeatLabel =#{repeatLabel}
+			</if>
+			<if test=" brandLabel != null and brandLabel != ''">
+				and brandLabel =#{brandLabel}
+			</if>
+			<if test=" sizeLabel != null and sizeLabel != ''">
+				and sizeLabel =#{sizeLabel}
+			</if>
+			<if test=" styleLabel != null and styleLabel != ''">
+				and styleLabel =#{styleLabel}
+			</if>
+			<if test=" timeLabel != null and timeLabel != ''">
+				and timeLabel =#{timeLabel}
+			</if>
+		</where>
+	</select>
+	
+	<select id="sumColor" parameterType="com.manage.query.model.MemberQuery" resultType="java.util.Map">
+		select s.specValue colorName,sum(od.totalPrice)totalprice,sum(od.totalPrice-od.costPrice*od.amount)totalprofit from (
+		select o.id,o.memberid,m.phone,m.membertype,m.nickname,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='level')levelLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='money')moneyLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='recent')recentLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='repeat')repeatLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='brand')brandLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='size')sizeLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='style')styleLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='time')timeLabel
+		 from t_order o
+		left join t_member m on m.id=o.memberid
+		where o.status=0 and o.ispay=1  and o.memberid is not null
+		)t0
+		left join t_order_detail od on od.orderid=t0.id
+		left join t_spec s on od.colorId=s.id
+		 <where>
+			<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" membertype != null and membertype != ''">
+				and membertype =#{membertype}
+			</if>
+			<if test=" levelLabel != null and levelLabel != ''">
+				and levelLabel =#{levelLabel}
+			</if>
+			<if test=" moneyLabel != null and moneyLabel != ''">
+				and moneyLabel =#{moneyLabel}
+			</if>
+			<if test=" recentLabel != null and recentLabel != ''">
+				and recentLabel =#{recentLabel}
+			</if>
+			<if test=" repeatLabel != null and repeatLabel != ''">
+				and repeatLabel =#{repeatLabel}
+			</if>
+			<if test=" brandLabel != null and brandLabel != ''">
+				and brandLabel =#{brandLabel}
+			</if>
+			<if test=" sizeLabel != null and sizeLabel != ''">
+				and sizeLabel =#{sizeLabel}
+			</if>
+			<if test=" styleLabel != null and styleLabel != ''">
+				and styleLabel =#{styleLabel}
+			</if>
+			<if test=" timeLabel != null and timeLabel != ''">
+				and timeLabel =#{timeLabel}
+			</if>
+		</where>
+		group by s.id
+	</select>
+	
+	<select id="sumSize" parameterType="com.manage.query.model.MemberQuery" resultType="java.util.Map">
+		select s.specValue sizeName,sum(od.totalPrice)totalprice,sum(od.totalPrice-od.costPrice*od.amount)totalprofit from (
+		select o.id,o.memberid,m.phone,m.membertype,m.nickname,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='level')levelLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='money')moneyLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='recent')recentLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='repeat')repeatLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='brand')brandLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='size')sizeLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='style')styleLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='time')timeLabel
+		 from t_order o
+		left join t_member m on m.id=o.memberid
+		where o.status=0 and o.ispay=1  and o.memberid is not null
+		)t0
+		left join t_order_detail od on od.orderid=t0.id
+		left join t_spec s on od.sizeId=s.id
+		 <where>
+		 	<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" membertype != null and membertype != ''">
+				and membertype =#{membertype}
+			</if>
+			<if test=" levelLabel != null and levelLabel != ''">
+				and levelLabel =#{levelLabel}
+			</if>
+			<if test=" moneyLabel != null and moneyLabel != ''">
+				and moneyLabel =#{moneyLabel}
+			</if>
+			<if test=" recentLabel != null and recentLabel != ''">
+				and recentLabel =#{recentLabel}
+			</if>
+			<if test=" repeatLabel != null and repeatLabel != ''">
+				and repeatLabel =#{repeatLabel}
+			</if>
+			<if test=" brandLabel != null and brandLabel != ''">
+				and brandLabel =#{brandLabel}
+			</if>
+			<if test=" sizeLabel != null and sizeLabel != ''">
+				and sizeLabel =#{sizeLabel}
+			</if>
+			<if test=" styleLabel != null and styleLabel != ''">
+				and styleLabel =#{styleLabel}
+			</if>
+			<if test=" timeLabel != null and timeLabel != ''">
+				and timeLabel =#{timeLabel}
+			</if>
+		</where>
+		group by s.id
+	</select>
+	
+	<select id="sumBrand" parameterType="com.manage.query.model.MemberQuery" resultType="java.util.Map">
+		select b.name brandname,sum(od.totalPrice)totalprice,sum(od.totalPrice-od.costPrice*od.amount)totalprofit from (
+		select o.id,o.memberid,m.phone,m.membertype,m.nickname,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='level')levelLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='money')moneyLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='recent')recentLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='repeat')repeatLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='brand')brandLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='size')sizeLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='style')styleLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='time')timeLabel
+		 from t_order o
+		left join t_member m on m.id=o.memberid
+		where o.status=0 and o.ispay=1  and o.memberid is not null
+		)t0
+		left join t_order_detail od on t0.id=od.orderid
+		left join t_goods_detail gd on od.goodsDetailId=gd.id
+		left join t_goods g on g.id=gd.goodsid
+		left join t_brand b on b.id=g.brandid
+		 <where>
+		 	<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" membertype != null and membertype != ''">
+				and membertype =#{membertype}
+			</if>
+			<if test=" levelLabel != null and levelLabel != ''">
+				and levelLabel =#{levelLabel}
+			</if>
+			<if test=" moneyLabel != null and moneyLabel != ''">
+				and moneyLabel =#{moneyLabel}
+			</if>
+			<if test=" recentLabel != null and recentLabel != ''">
+				and recentLabel =#{recentLabel}
+			</if>
+			<if test=" repeatLabel != null and repeatLabel != ''">
+				and repeatLabel =#{repeatLabel}
+			</if>
+			<if test=" brandLabel != null and brandLabel != ''">
+				and brandLabel =#{brandLabel}
+			</if>
+			<if test=" sizeLabel != null and sizeLabel != ''">
+				and sizeLabel =#{sizeLabel}
+			</if>
+			<if test=" styleLabel != null and styleLabel != ''">
+				and styleLabel =#{styleLabel}
+			</if>
+			<if test=" timeLabel != null and timeLabel != ''">
+				and timeLabel =#{timeLabel}
+			</if>
+		</where>
+		group by b.id
+	</select>
+	<select id="sumStyle" parameterType="com.manage.query.model.MemberQuery" resultType="java.util.Map">
+		select s.name styleName,sum(od.totalPrice)totalprice,sum(od.totalPrice-od.costPrice*od.amount)totalprofit from (
+		select o.id,o.memberid,m.phone,m.membertype,m.nickname,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='level')levelLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='money')moneyLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='recent')recentLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='repeat')repeatLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='brand')brandLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='size')sizeLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='style')styleLabel,
+		(select ml.labelName from t_member_label ml where ml.memberid=m.id and ml.typeCode='time')timeLabel
+		 from t_order o
+		left join t_member m on m.id=o.memberid
+		where o.status=0 and o.ispay=1  and o.memberid is not null
+		)t0
+		left join t_order_detail od on t0.id=od.orderid
+		left join t_goods_detail gd on od.goodsDetailId=gd.id
+		left join t_goods g on g.id=gd.goodsid
+		left join t_style s on g.styleTypeid=s.id
+		 <where>
+		 	<if test=" nickname != null and nickname != ''">
+				and nickname like '%${nickname}%'
+			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
+			<if test=" membertype != null and membertype != ''">
+				and membertype =#{membertype}
+			</if>
+			<if test=" levelLabel != null and levelLabel != ''">
+				and levelLabel =#{levelLabel}
+			</if>
+			<if test=" moneyLabel != null and moneyLabel != ''">
+				and moneyLabel =#{moneyLabel}
+			</if>
+			<if test=" recentLabel != null and recentLabel != ''">
+				and recentLabel =#{recentLabel}
+			</if>
+			<if test=" repeatLabel != null and repeatLabel != ''">
+				and repeatLabel =#{repeatLabel}
+			</if>
+			<if test=" brandLabel != null and brandLabel != ''">
+				and brandLabel =#{brandLabel}
+			</if>
+			<if test=" sizeLabel != null and sizeLabel != ''">
+				and sizeLabel =#{sizeLabel}
+			</if>
+			<if test=" styleLabel != null and styleLabel != ''">
+				and styleLabel =#{styleLabel}
+			</if>
+			<if test=" timeLabel != null and timeLabel != ''">
+				and timeLabel =#{timeLabel}
+			</if>
+		</where>
+		group by s.id
+	</select>
+	
+</mapper>
