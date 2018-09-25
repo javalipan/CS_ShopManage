@@ -97,4 +97,12 @@ public class OrderService implements IOrderService {
 		return orderQueryMapper.sumStyle(startTime, endTime, brandid);
 	}
 
+	public List<OrderQuery> selectByOrderQuery2(OrderQuery orderQuery) {
+		return orderQueryMapper.selectByOrderQuery2(orderQuery);
+	}
+
+	public Integer countByOrderQuery2(OrderQuery orderQuery) {
+		return orderQueryMapper.countByOrderQuery2(orderQuery);
+	}
+
 }

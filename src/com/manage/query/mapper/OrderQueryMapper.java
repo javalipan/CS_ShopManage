@@ -37,6 +37,20 @@ public interface OrderQueryMapper {
     * @author lipan@cqrainbowsoft.com    
     */
     public Integer countByOrderQuery(OrderQuery orderQuery);
+    /** 
+     * 查询订单表2列表
+     * @param orderQuery
+     * @return    List<OrderQuery> 
+     * @author lipan@cqrainbowsoft.com    
+     */
+    public List<OrderQuery> selectByOrderQuery2(OrderQuery orderQuery);
+    /** 
+     * 查询订单表2条数
+     * @param orderQuery
+     * @return   Integer 
+     * @author lipan@cqrainbowsoft.com    
+     */
+    public Integer countByOrderQuery2(OrderQuery orderQuery);
     /**
      * 订单统计
      * @param orderQuery

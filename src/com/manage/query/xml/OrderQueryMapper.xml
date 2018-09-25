@@ -127,6 +127,117 @@
 		</where>
 	</select>
 	
+	<select id="selectByOrderQuery2" parameterType="com.manage.query.model.OrderQuery" resultType="com.manage.query.model.OrderQuery">
+		select distinct o.*,(select sum(od2.amount) from t_order_detail od2 where od2.orderid=o.id) amount,m.nickname membernickname,u.name as modifyUserName,ls.gradename memberlevel from t_order2 o
+		left join t_member m on m.id=o.memberid
+		left join users u on u.id=o.modifyUser
+		left join t_order_detail od on od.orderid=o.id
+		left join t_goods_detail gd on gd.id=od.goodsDetailId
+		left join t_goods g on g.id=gd.goodsid
+		left join t_level_setting ls on ls.levelstart &lt;= cast(m.totalmoney as UNSIGNED) and ls.levelend &gt;= cast(m.totalmoney as UNSIGNED)
+		<where>
+			<if test="code != null and code != ''">
+				and o.code like '%${code}%'
+			</if>
+			<if test="type != null and type != ''">
+				and o.type=#{type}
+			</if>
+			<if test="memberid != null and memberid != ''">
+				and o.memberid=#{memberid}
+			</if>
+			<if test="ispay != null and ispay != ''">
+				and o.ispay=#{ispay}
+			</if>
+			<if test="issend != null and issend != ''">
+				and o.issend=#{issend}
+			</if>
+			<if test="isreceive != null and isreceive != ''">
+				and o.isreceive=#{isreceive}
+			</if>
+			<if test="delway != null and delway != ''">
+				and o.delway=#{delway}
+			</if>
+			<if test="payway != null and payway != ''">
+				and o.payway=#{payway}
+			</if>
+			<if test="status != null and status != ''">
+				and o.status=#{status}
+			</if>
+			<if test="ordertimestart != null and ordertimestart != ''">
+				and o.ordertime &gt;= #{ordertimestart}
+			</if>
+			<if test="ordertimeend != null and ordertimeend != ''">
+				and o.ordertime &lt;= #{ordertimeend}
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				and g.name like '%${goodsName}%'
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+			<if test="goodsid != null and goodsid != ''">
+				and g.id=#{goodsid}
+			</if>
+		</where>
+		<if test="orderBy !=null  and orderBy != '' ">
+			order by ${orderBy}
+		</if>
+		<if test="pager !=null  and pager != '' ">
+			limit #{pager.begin},#{pager.rows}
+		</if>
+	</select>
+	
+	<select id="countByOrderQuery2" parameterType="com.manage.query.model.OrderQuery" resultType="java.lang.Integer">
+		select count(distinct o.id) from t_order2 o
+		left join t_order_detail od on od.orderid=o.id
+		left join t_goods_detail gd on gd.id=od.goodsDetailId
+		left join t_goods g on g.id=gd.goodsid
+		<where>
+			<if test="code != null and code != ''">
+				and o.code like '%${code}%'
+			</if>
+			<if test="type != null and type != ''">
+				and o.type=#{type}
+			</if>
+			<if test="memberid != null and memberid != ''">
+				and o.memberid=#{memberid}
+			</if>
+			<if test="ispay != null and ispay != ''">
+				and o.ispay=#{ispay}
+			</if>
+			<if test="issend != null and issend != ''">
+				and o.issend=#{issend}
+			</if>
+			<if test="isreceive != null and isreceive != ''">
+				and o.isreceive=#{isreceive}
+			</if>
+			<if test="delway != null and delway != ''">
+				and o.delway=#{delway}
+			</if>
+			<if test="payway != null and payway != ''">
+				and o.payway=#{payway}
+			</if>
+			<if test="status != null and status != ''">
+				and o.status=#{status}
+			</if>
+			<if test="ordertimestart != null and ordertimestart != ''">
+				and o.ordertime &gt;= #{ordertimestart}
+			</if>
+			<if test="ordertimeend != null and ordertimeend != ''">
+				and o.ordertime &lt;= #{ordertimeend}
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				and g.name like '%${goodsName}%'
+			</if>
+			<if test="brandid != null and brandid != ''">
+				and g.brandid=#{brandid}
+			</if>
+			<if test="goodsid != null and goodsid != ''">
+				and g.id=#{goodsid}
+			</if>
+		</where>
+	</select>
+	
 	<select id="sumOrder" parameterType="com.manage.query.model.OrderQuery" resultType="java.util.Map">
 		select count(1) ordercount,sum(o.oldprice) oldpricesum,sum(o.totalprice) totalpricesum,sum(o.integralPrice) integralPricesum,count(distinct o.memberId) membercount from t_order o
 		where o.status='0' and  o.ispay='1'

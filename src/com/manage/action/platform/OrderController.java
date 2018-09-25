@@ -72,6 +72,24 @@ public class OrderController extends BaseController{
 		return DataGridJson(orderList, count);
 	}
 	
+	@RequestMapping(value="/initOrderList2.action")
+	public String initOrderList2(){
+		return "order/orderlist2";
+	}
+	
+	@RequestMapping(value="/searchOrders2.action")
+	@ResponseBody
+	public String searchOrders2(ModelMap model,OrderQuery orderQuery,Pager pager,String orderBy){
+		if(StringUtils.isBlank(orderBy)){
+			orderBy="o.ordertime desc";
+		}
+		orderQuery.setOrderBy(orderBy);
+		orderQuery.setPager(pager);
+		int count=orderService.countByOrderQuery2(orderQuery);
+		List<OrderQuery> orderList=orderService.selectByOrderQuery2(orderQuery);
+		return DataGridJson(orderList, count);
+	}
+	
 	@RequestMapping(value="/initOrderEdit.action")
 	public String initOrderEdit(ModelMap model,OrderQuery order){
 		model.put("order", orderService.selectByPrimaryKey(order.getId()));

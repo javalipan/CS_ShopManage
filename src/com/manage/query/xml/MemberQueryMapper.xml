@@ -205,6 +205,9 @@
 			<if test=" nickname != null and nickname != ''">
 				and nickname like '%${nickname}%'
 			</if>
+			<if test=" phone != null and phone != ''">
+				and phone =#{phone}
+			</if>
 			<if test=" membertype != null and membertype != ''">
 				and membertype =#{membertype}
 			</if>
