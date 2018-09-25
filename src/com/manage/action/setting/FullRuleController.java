@@ -16,7 +16,7 @@ import com.manage.util.Pager;
 
 /**
  * 满减规则设置
- * @author pan1
+ * @author pan
  *
  */
 @Controller
