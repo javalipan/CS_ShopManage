@@ -145,6 +145,7 @@ public class CouponController extends BaseController{
 				memberCoupon.setStarttime(calendar.getTime());
 				memberCoupon.setEndtime(end.getTime());
 			}
+			memberCoupon.setLimitmoney(coupon.getLimitmoney());
 			memberCoupon.setStatus("0");
 			memberCouponService.insertSelective(memberCoupon);		//发放会员优惠券
 			

@@ -68,6 +68,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</div>
 			<div class="item">
+				<div class="label">金额限制:</div>
+				<div class="input">
+					<input name="limitmoney" type="text" id="limitmoney" value="${coupon.limitmoney}" data-options="required:true,validType:['number']" class="easyui-validatebox"/>
+				</div>
+			</div>
+			<div class="item">
 				<div class="label"><span style="color:red">*</span>有效期类型:</div>
 				<div class="input">
 					<label><input type="radio" name="timetype" <c:if test="${coupon.timetype=='0'||coupon.timetype==null}">checked="checked"</c:if> value="0"/>固定期限</label>
