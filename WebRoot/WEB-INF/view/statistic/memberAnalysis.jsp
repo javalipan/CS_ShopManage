@@ -21,6 +21,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/echarts.min.js"></script>
 	<script type="text/javascript">
 		$(function(){
+			$("#brandPie,#stylePie,#colorPie,#sizePie").css({
+				height:$(window).width()*0.8,
+			});
+			
 			//初始化表格
 			$('#sumTable').datagrid({
 				title:'会员标签(NES)统计分析', //标题
@@ -305,12 +309,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		<table id="sumTable"></table>
   	</div>
   	<div>
-  		<div id="brandPie" style="width:48%;height:250px;float: left;"></div>
-  		<div id="stylePie" style="width:48%;height:250px;float: left;"></div>
+  		<div id="brandPie" style="width:100%;"></div>
+  		<div id="stylePie" style="width:100%;"></div>
   	</div>
   	<div>
-  		<div id="colorPie" style="width:48%;height:250px;float: left;"></div>
-  		<div id="sizePie" style="width:48%;height:250px;float: left;"></div>
+  		<div id="colorPie" style="width:100%;"></div>
+  		<div id="sizePie" style="width:100%;"></div>
   	</div>
   	
   	<div id="dialog" style="padding: 5px;">   
