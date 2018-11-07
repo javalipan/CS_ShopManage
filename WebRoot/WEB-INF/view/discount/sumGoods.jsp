@@ -23,7 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$(function(){
 			//初始化表格
 			$('#goodsTable').datagrid({
-				title:'商品统计', //标题
+				title:'商品折扣', //标题
 				method:'post',
 				iconCls:'icon-list', //图标
 				singleSelect:false, //多选
@@ -45,7 +45,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},
 					{field:'goodsyear',title:'年',width:60,sortable:false,align:'left'},
 					{field:'goods_season',title:'季节',width:60,sortable:false,align:'center'},
-					{field:'totalcost',title:'总成本',width:60,sortable:false,align:'center',
+					{hidden:true,field:'totalcost',title:'总成本',width:60,sortable:false,align:'center',
 						formatter:function(value,row,index){
 							return row.remaincost+row.selledcost;
 						}
@@ -56,15 +56,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						}
 					},
 					{field:'selledamount',title:'已售',width:60,sortable:false,align:'center'},
-					{field:'selledmoney',title:'已售金额',width:60,sortable:false,align:'center'},
-					{field:'rate',title:'利润率',width:60,sortable:false,align:'center',
+					{hidden:true,field:'selledmoney',title:'已售金额',width:60,sortable:false,align:'center'},
+					{hidden:true,field:'rate',title:'利润率',width:60,sortable:false,align:'center',
 						formatter:function(value,row,index){
 							return Number(row.rate).toFixed(2);
 						}
 					},
 					{field:'remainresp',title:'剩余库存',width:60,sortable:false,align:'center'},
-					{field:'remaincost',title:'剩余成本',width:60,sortable:false,align:'center'},
-					{field:'remainsell',title:'预计销售额',width:60,sortable:false,align:'center'},
+					{hidden:true,field:'remaincost',title:'剩余成本',width:60,sortable:false,align:'center'},
+					{hidden:true,field:'remainsell',title:'预计销售额',width:60,sortable:false,align:'center'},
 					{field:'options',title:'操作',width:60,sortable:false,align:'center',
 						formatter:function(value,row,index){
 							return "<a class='trbutton' href='javascript:void(0)' onclick=\"setDiscount("+row.id+",'"+row.goodsyear+"','"+row.goods_season+"')\">设置折扣</a>";
