@@ -120,11 +120,13 @@ public class GoodsController extends BaseController{
 		
 		SpecExample specExample=new SpecExample();
 		specExample.createCriteria().andTypecodeEqualTo("color");
+		specExample.setOrderByClause("sortno desc");
 		List<Spec> colors=specService.selectByExample(specExample);
 		model.put("colors", colors);
 		
 		SpecExample sizespecExample=new SpecExample();
 		sizespecExample.createCriteria().andTypecodeEqualTo("size");
+		sizespecExample.setOrderByClause("sortno desc");
 		List<Spec> sizes=specService.selectByExample(sizespecExample);
 		model.put("sizes", sizes);
 		

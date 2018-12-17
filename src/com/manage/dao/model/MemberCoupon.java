@@ -46,7 +46,7 @@ public class MemberCoupon implements Serializable {
     /**[19] 使用订单*/
     private Long orderid;
 
-    /**[10 NOTNULL] 金额制限*/
+    /**[10 NOTNULL] 金额限制*/
     private Integer limitmoney;
 
     private static final long serialVersionUID = 1L;
@@ -248,14 +248,14 @@ public class MemberCoupon implements Serializable {
     }
 
     /**
-     * @return  Integer  金额制限
+     * @return  Integer  金额限制
      */
     public Integer getLimitmoney() {
         return limitmoney;
     }
 
     /**
-     * @param  Integer[10 NOTNULL] 金额制限
+     * @param  Integer[10 NOTNULL] 金额限制
      */
     public void setLimitmoney(Integer limitmoney) {
         this.limitmoney = limitmoney;

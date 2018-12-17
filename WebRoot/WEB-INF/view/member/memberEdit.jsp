@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				return false;
 			}
 			$.post("<%=request.getContextPath()%>/member/saveMember.action",$("#form1").serializeArray(),function(data){
-				searchList();
+				$('#dataTable').datagrid('reload');
 				$("#dialog").dialog("close");
 				$.messager.alert('提示',data,'info');
 			});

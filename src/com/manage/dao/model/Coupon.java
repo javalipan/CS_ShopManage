@@ -64,7 +64,7 @@ public class Coupon implements Serializable {
     /**[36 NOTNULL] 创建人*/
     private String createuser;
 
-    /**[10 NOTNULL] 金额制限*/
+    /**[10 NOTNULL] 金额限制*/
     private Integer limitmoney;
 
     private static final long serialVersionUID = 1L;
@@ -350,14 +350,14 @@ public class Coupon implements Serializable {
     }
 
     /**
-     * @return  Integer  金额制限
+     * @return  Integer  金额限制
      */
     public Integer getLimitmoney() {
         return limitmoney;
     }
 
     /**
-     * @param  Integer[10 NOTNULL] 金额制限
+     * @param  Integer[10 NOTNULL] 金额限制
      */
     public void setLimitmoney(Integer limitmoney) {
         this.limitmoney = limitmoney;
