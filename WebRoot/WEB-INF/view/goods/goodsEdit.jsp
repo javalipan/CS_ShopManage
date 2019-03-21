@@ -232,14 +232,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="label">年:</div>
 				<div class="input">
 					<c:set var="flag" value="true"></c:set>
+					<c:set var="year" value="2018"></c:set>
 					<select name="goodsyear" class="easyui-combobox" data-options="editable:false,width:147">
-						<c:forEach begin="${year }" end="${year+10 }" varStatus="status" var="y">
+						<c:forEach begin="${year }" end="${year+15 }" varStatus="status" var="y">
 							<c:if test="${y==goods.goodsyear }"><c:set var="flag" value="false"></c:set></c:if>
 						</c:forEach>
 						<c:if test="${flag==true }">
 							<option selected="selected" value="${goods.goodsyear }">${goods.goodsyear }</option>
 						</c:if>
-						<c:forEach begin="${year }" end="${year+10 }" varStatus="status" var="y">
+						<c:forEach begin="${year }" end="${year+15 }" varStatus="status" var="y">
 							<option <c:if test="${y==goods.goodsyear }">selected="selected"</c:if> value="${y }">${y }</option>
 						</c:forEach>
 					</select>

@@ -236,8 +236,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="item">
 				<div class="label">年:</div>
 				<div class="input">
+					<c:set var="year" value="2018"></c:set>
 					<select name="goodsyear" class="easyui-combobox" data-options="editable:false,width:147">
-						<c:forEach begin="${year }" end="${year+10 }" varStatus="status" var="y">
+						<c:forEach begin="${year }" end="${year+15 }" varStatus="status" var="y">
 							<option value="${y }">${y }</option>
 						</c:forEach>
 					</select>
