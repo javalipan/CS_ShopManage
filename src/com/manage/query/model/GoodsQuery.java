@@ -136,4 +136,20 @@ public class GoodsQuery extends Goods{
 		this.styletypename = styletypename;
 	}
 	
+	public String getSeasonName(){
+		if("0".equals(this.getSeason())){
+			return "春装";
+		}
+		if("1".equals(this.getSeason())){
+			return "夏装";
+		}
+		if("2".equals(this.getSeason())){
+			return "秋装";
+		}
+		if("3".equals(this.getSeason())){
+			return "冬装";
+		}
+		return "";
+	}
+	
 }

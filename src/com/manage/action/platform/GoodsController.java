@@ -8,9 +8,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +43,9 @@ import com.manage.service.ISpecService;
 import com.manage.util.ArrayUtil;
 import com.manage.util.Pager;
 import com.manage.util.excel.ExcelUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * 商品管理
@@ -268,6 +268,7 @@ public class GoodsController extends BaseController{
 			for(GoodsDetailQuery gd:detailQuerys){
 				JSONObject obj=new JSONObject();
 				obj.put("name", g.getName());
+				obj.put("season", g.getSeasonName());
 				obj.put("color", gd.getColorName());
 				obj.put("size", gd.getSizeName());
 				obj.put("price", gd.getPrice());
