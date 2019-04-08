@@ -63,12 +63,12 @@ public class ExcelUtil {
 			HSSFCell cell1=row.createCell(1);
 			formatCellStyle(wb, cell1);
 			cell1.setCellValue(obj.getString("name"));
-			HSSFCell cell11=row.createCell(2);
-			formatCellStyle(wb, cell11);
-			cell11.setCellValue(obj.getString("season"));
-			HSSFCell cell2=row.createCell(3);
+			HSSFCell cell2=row.createCell(2);
 			formatCellStyle(wb, cell2);
 			cell2.setCellValue(obj.getString("unit"));
+			HSSFCell cell22=row.createCell(3);
+			formatCellStyle(wb, cell22);
+			cell22.setCellValue(obj.getString("season"));
 			HSSFCell cell3=row.createCell(4);
 			formatCellStyle(wb, cell3);
 			cell3.setCellValue(obj.getString("material"));
