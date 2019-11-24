@@ -6,11 +6,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,6 +30,9 @@ import com.manage.query.mapper.GoodsQueryMapper;
 import com.manage.query.model.GoodsQuery;
 import com.manage.service.IGoodsService;
 import com.manage.util.ArrayUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class GoodsService implements IGoodsService {
@@ -352,7 +353,54 @@ public class GoodsService implements IGoodsService {
 		GoodsDetail goodsDetail=new GoodsDetail();
 		goodsDetail.setStatus(status);
 		goodsDetailMapper.updateByExampleSelective(goodsDetail, goodsDetailExample);
+		
+		for(Long id:idlist){
+			updateSpec(id, status);
+		}
 		return false;
+	}
+	
+	@Async
+	private void updateSpec(Long id,String status){
+		GoodsDetailExample goodsDetailExample=new GoodsDetailExample();
+		goodsDetailExample.createCriteria().andGoodsidEqualTo(id).andStatusEqualTo("1");
+		List<GoodsDetail> goodsDetails=goodsDetailMapper.selectByExample(goodsDetailExample);		//已上架商品
+		Goods goods=new Goods();
+		goods.setId(id);
+		JSONArray sizeJson=new JSONArray();
+		JSONArray colorJson=new JSONArray();
+		for(int i=0;i<goodsDetails.size();i++){
+			//拼装规格json
+			boolean sizeFlag=true;
+			for(int j=0;j<sizeJson.size();j++){
+				if(sizeJson.getJSONObject(j).getLong("id")==goodsDetails.get(i).getSizeid()){
+					sizeFlag=false;
+				}
+			}
+			if(sizeFlag){
+				JSONObject obj=new JSONObject();
+				obj.put("id", goodsDetails.get(i).getSizeid());
+				obj.put("name", specMapper.selectByPrimaryKey(goodsDetails.get(i).getSizeid()).getSpecvalue());
+				sizeJson.add(obj);
+			}
+			boolean colorFlag=true;
+			for(int j=0;j<colorJson.size();j++){
+				if(colorJson.getJSONObject(j).getLong("id")==goodsDetails.get(i).getColorid()){
+					colorFlag=false;
+				}
+			}
+			if(colorFlag){
+				JSONObject obj=new JSONObject();
+				obj.put("id", goodsDetails.get(i).getColorid());
+				obj.put("name", specMapper.selectByPrimaryKey(goodsDetails.get(i).getColorid()).getSpecvalue());
+				colorJson.add(obj);
+			}
+		}
+		JSONObject specJson=new JSONObject();
+		specJson.put("size", sizeJson);
+		specJson.put("color", colorJson);
+		goods.setSpecjson(specJson.toString());
+		goodsMapper.updateByPrimaryKeySelective(goods);		//修改商品状态为上架
 	}
 
 	public GoodsQuery selectGoodsQueryByCode(String code) {
