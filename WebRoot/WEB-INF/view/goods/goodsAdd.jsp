@@ -33,6 +33,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(!flag) {
 				return false;
 			}
+			var html = ue.getContent();
+			if(html&&html.indexOf("\n")>=0){
+				html=html.replace(/[\r\n]/g,"");
+				ue.setContent(html);
+			}
 			var imgarray=[];
 			for(var i=0;i<$(".uploaditem").length;i++){
 				var url=$(".uploaditem").eq(i).find("input[type='hidden']").val();
